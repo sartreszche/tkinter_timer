@@ -14,28 +14,20 @@
 # 4.  'tkinter' is the package name
 #	   for Python v. 3.x while 'Tkinter' is 
 #       the package name for v. 2.x 
+# Tkinter timer 2
 
 from Tkinter import *
 
 class Application(Frame):
-	
 	def say_hi(self):
 		print "Hello world!"
 
-	# def start_timer():
-		# global timer
-#     
-    	# if not timer.is_running():
-        	# timer.start()
-
-
 	def createWidgets(self):
-		# self.start = Button(self)
-		# self.start["text"] = "Start"
-		# self.start["fg"] = "black"
-		# self.start["command"] = self.start_timer()
-
-		self.start.pack({"side": "left"})
+		self.QUIT = Button(self)
+		self.QUIT["text"] = "Quit"
+		self.QUIT["fg"] = "red"
+		self.QUIT["command"] = self.quit
+		self.QUIT.pack({"side": "left"})
 
 		self.hi_there = Button(self)
 		self.hi_there["text"] = "Hello",
