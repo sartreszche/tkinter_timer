@@ -15,7 +15,8 @@ class Stopwatch(Frame):
 
 	def makeWidgets(self):
 		""" Make th time label. """
-		l = Label(self, textvariable=self.timestr)
+		l = Label(self, textvariable=self.timestr, fg='green', bg='black', width=10, height=2)
+		l.config(font=('Courier', 32))
 		self._setTime(self._elapsedtime)
 		l.pack(fill=X, expand=NO, pady=2, padx=2)
 
@@ -29,9 +30,9 @@ class Stopwatch(Frame):
 		""" Set time string to Minutes:Seconds.Tenths """
 		minutes = int(elapsed / 60)
 		seconds = int(elapsed - minutes * 60)
-		tenths = int((elapsed - ((minutes * 60) + seconds))*100)
-		self.timestr.set('%02d:%02d.%02d' % (minutes, seconds, tenths))
-
+		hundredths = int((elapsed - ((minutes * 60) + seconds))*100)
+		self.timestr.set('%02d:%02d.%02d' % (minutes, seconds, hundredths))
+		
 	def Start(self):
 		""" Start stopwatch only if not already running """
 		if not self._running:
@@ -55,13 +56,14 @@ class Stopwatch(Frame):
 
 def main():
 	root = Tk()
+	root.configure(background='black')
 	sw = Stopwatch(root)
 	sw.pack(side=TOP)
 
 	Button(root, text='Start', command=sw.Start).pack(side=LEFT)
 	Button(root, text='Stop', command=sw.Stop).pack(side=LEFT)
 	Button(root, text='Reset', command=sw.Reset).pack(side=LEFT)
-	Button(root, text='Quit', command=root.quit).pack(side=LEFT)
+	Button(root, text='Quit', command=root.quit).pack(side=RIGHT)
 
 	root.mainloop()
 
