@@ -1,67 +1,69 @@
-# Tkinter timer
+# modified from http://code.activestate.com/recipes/124894-stopwatch-in-tkinter/
 
 from Tkinter import *
 import time
 
-class Application(Frame):
-	"""
-	Creates a frame and adds button and canvas to display timer count
-	"""
-	
-	def createWidgets(self):
-		self.QUIT = Button(self)
-		self.QUIT["text"] = "Quit"
-		self.QUIT["fg"] = "red"
-		self.QUIT["command"] = self.quit
-		self.QUIT.pack({"side": "left"})
+class Stopwatch(Frame):
+	""" implements a stopwatch frame widget """
+	def __init__(self, parent=None, **kw):
+		Frame.__init__(self, parent, kw)
+		self._start = 0.0
+		self._elapsedtime = 0.0
+		self._running = False
+		self.timestr = StringVar()
+		self.makeWidgets()
 
-		self.start_timer = Button(self)
-		self.start_timer["text"] = "Start"
-		self.start_timer["command"] = self.start_timer
+	def makeWidgets(self):
+		""" Make th time label. """
+		l = Label(self, textvariable=self.timestr)
+		self._setTime(self._elapsedtime)
+		l.pack(fill=X, expand=NO, pady=2, padx=2)
 
-		self.start_timer.pack({"side": "left"})
+	def _update(self):
+		""" Update label with elapsed time """
+		self._elapsedtime = time.time() - self._start
+		self._setTime(self._elapsedtime)
+		self._timer = self.after(50, self._update)
 
-		self.stop_timer = Button(self)
-		self.stop_timer["text"] = "Stop"
-		self.stop_timer["command"] = self.stop_timer
+	def _setTime(self, elapsed):
+		""" Set time string to Minutes:Seconds.Tenths """
+		minutes = int(elapsed / 60)
+		seconds = int(elapsed - minutes * 60)
+		tenths = int((elapsed - ((minutes * 60) + seconds))*100)
+		self.timestr.set('%02d:%02d.%02d' % (minutes, seconds, tenths))
 
-		self.stop_timer.pack({"side": "left"})
+	def Start(self):
+		""" Start stopwatch only if not already running """
+		if not self._running:
+			self._start = time.time() - self._elapsedtime
+			self._update()
+			self._running = 1
 
-		self.reset_timer = Button(self)
-		self.reset_timer["text"] = "Reset"
-		self.reset_timer["command"] = self.reset_timer
+	def Stop(self):
+		""" stop the stopwatch if not already stopped """
+		if self._running:
+			self.after_cancel(self._timer)
+			self._elapsedtime = time.time() - self._start
+			self._setTime(self._elapsedtime)
+			self._running = 0
 
-		self.reset_timer.pack({"side": "left"})
+	def Reset(self):
+		""" Reset the stopwatch """
+		self._start = time.time()
+		self._elapsedtime = 0.0
+		self._setTime(self._elapsedtime)
 
+def main():
+	root = Tk()
+	sw = Stopwatch(root)
+	sw.pack(side=TOP)
 
-	def __init__(self, master=None):
-		Frame.__init__(self, master)
-		self.pack()
-		self.createWidgets()
+	Button(root, text='Start', command=sw.Start).pack(side=LEFT)
+	Button(root, text='Stop', command=sw.Stop).pack(side=LEFT)
+	Button(root, text='Reset', command=sw.Reset).pack(side=LEFT)
+	Button(root, text='Quit', command=root.quit).pack(side=LEFT)
 
+	root.mainloop()
 
-class Timer():
-	"""
-	Timer class which creates a timer and has start, stop and reset methods
-	"""
-	def __init__(self, func=time.perf_counter):
-		display_time = 0.0
-		self._func = func
-		self._start = None
-
-	def start(self):
-		if self._start is not None:
-			raise RuntimeError("Already started")
-		self._start = self._func()
-
-	def stop(self):
-		pass
-
-	def reset():
-		pass	
-
-
-root = Tk()
-app = Application(master=root)
-app.mainloopd()
-root.destroy()
+if __name__ == '__main__':
+	main()
