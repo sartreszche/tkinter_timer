@@ -3,6 +3,7 @@
 from Tkinter import *
 import time
 
+
 class Timer(Frame):
 	""" implements a stopwatch frame widget """
 	def __init__(self, parent=None, **kw):
@@ -54,6 +55,7 @@ class Timer(Frame):
 		self._elapsedtime = 0.0
 		self._setTime(self._elapsedtime)
 
+		
 def main():
 	root = Tk()
 	root.configure(background='black')
@@ -67,5 +69,6 @@ def main():
 
 	root.mainloop()
 
+	
 if __name__ == '__main__':
 	main()
